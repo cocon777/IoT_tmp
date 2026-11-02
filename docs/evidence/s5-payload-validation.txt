@@ -1,0 +1,13 @@
+=== KIEM THU BAO MAT S5 (BUOC S14): KIEM TRA & LOAI BO PAYLOAD DOC HAI ===
+Timestamp: 2026-11-02T04:08:48.992206+00:00
+File dau vao: tests/security/payloads_s05.json (6 kich ban)
+--------------------------------------------------------------------------
+[WARN] Khong ket noi duoc broker MQTT ([Errno 11001] getaddrinfo failed), chi chay bo loc truc tiep.
+[PASS] S5-01 (level_pct vuot nguong (999 > 100)) -> Bi loai bo | reason=level_pct_out_of_range
+[PASS] S5-02 (level_pct am (-15 < 0)) -> Bi loai bo | reason=level_pct_out_of_range
+[PASS] S5-03 (Thieu truong bat buoc ts (timestamp)) -> Bi loai bo | reason=missing_field:ts
+[PASS] S5-04 (Chuoi XSS <script> trong truong fault) -> Bi loai bo | reason=malicious_content_detected
+[PASS] S5-05 (Chuoi SQL Injection trong device_id/fault) -> Bi loai bo | reason=malicious_content_detected
+[PASS] S5-06 (flow_lpm am (-5.0 L/min)) -> Bi loai bo | reason=negative_flow_lpm
+--------------------------------------------------------------------------
+KET QUA S5: 6/6 PASS (Tat ca payload sai/doc hai deu bi loai bo va ghi log)

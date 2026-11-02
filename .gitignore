@@ -1,0 +1,35 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Certificates & private keys (allow public CA if explicitly tracked)
+*.pem
+*.key
+*.crt
+!deployment/certs/ca.crt
+
+# Mosquitto runtime secrets & data
+deployment/mosquitto/passwd
+deployment/mosquitto/dynamic-security.json
+deployment/mosquitto/data/
+deployment/mosquitto/log/
+deployment/data/
+mysql_data/
+mosquitto_data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & OS files
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,38 @@
+flowchart LR
+    subgraph Threats["Mối đe dọa Bảo mật (Threats)"]
+        T1["T1: Vận hành viên điều khiển/xem trái phép\nthiết bị khu vực khác hoặc leo thang đặc quyền"]
+        T2["T2: Truy cập API không xác thực,\ngiả mạo chữ ký JWT hoặc dùng token hết hạn"]
+        T3["T3: Thiết bị bị đánh cắp/thu hồi (Decommissioned)\ntiếp tục gửi dữ liệu giả mạo vào hệ thống"]
+        T4["T4: Thiết bị IoT A giả mạo topic MQTT\nđể gửi dữ liệu/lệnh sang thiết bị IoT B"]
+        T5["T5: Tấn công bơm dữ liệu dị dạng (SQLi/XSS),\nsai miền giá trị hoặc làm ngập broker (DoS)"]
+        T6["T6: Tấn công vét cạn mật khẩu (Brute-force)\nvào endpoint đăng nhập /api/auth/login"]
+        T7["T7: Nghe lén mật khẩu và payload MQTT/HTTP\ntrên đường truyền mạng (Sniffing)"]
+    end
+
+    subgraph Mitigations["Biện pháp Phòng vệ của TV3 (Mitigations)"]
+        M1["M1: RBAC (require_role) + Kiểm tra bảng user_devices\n(require_device_access) + Ghi Audit Log"]
+        M2["M2: PyJWT HS256 (exp, iat, jti) + Blacklist thu hồi\n+ Đóng WebSocket nếu không gửi auth trong 5s"]
+        M3["M3: Thu hồi 2 lớp: Xóa client/role trên Mosquitto DynSec\n+ Chặn tại Backend qua is_device_active()"]
+        M4["M4: Mosquitto ACL / Dynamic Security Role riêng\nwms/<device_id>/telemetry|status|ack|cmd|config"]
+        M5["M5: Device Guard: Giới hạn 2 KB, tần suất 12 msg/phút\n+ validate_telemetry_payload (schema, miền giá trị)"]
+        M6["M6: Băm bcrypt + Khóa tạm 15 phút sau 5 lần sai\n(failed_attempts, locked_until) + Rate Limit theo IP"]
+        M7["M7: Mã hóa TLS 1.2/1.3 cho MQTT (8883)\nvà HTTPS cho Nginx (8443) với CA nội bộ"]
+    end
+
+    subgraph Tests["Mã Kiểm thử & Bằng chứng (Tests)"]
+        V1["Kiểm thử F1 & S1\n(f1-rbac-matrix.txt, s1-cross-device.txt)"]
+        V2["Kiểm thử S2\n(s2-401.txt)"]
+        V3["Kiểm thử S3 & F8\n(s3-broker-revoke.txt, s3-f8-full-revoke.txt)"]
+        V4["Kiểm thử S4\n(s4-acl-log.txt)"]
+        V5["Kiểm thử S5\n(s5-payload-validation.txt)"]
+        V6["Kiểm thử S6\n(s6-lockout.txt)"]
+        V7["Kiểm thử S13\n(s-tls-wireshark.png, s13-tls-cli.txt)"]
+    end
+
+    T1 --> M1 --> V1
+    T2 --> M2 --> V2
+    T3 --> M3 --> V3
+    T4 --> M4 --> V4
+    T5 --> M5 --> V5
+    T6 --> M6 --> V6
+    T7 --> M7 --> V7

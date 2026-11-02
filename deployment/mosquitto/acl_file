@@ -1,0 +1,10 @@
+# Tai khoan backend doc/ghi toan bo nhanh wms/#
+user backend
+topic readwrite wms/#
+
+# Mau ACL cho thiet bi theo username (%u = deviceId, vi du wms-001)
+pattern write wms/%u/telemetry
+pattern write wms/%u/status
+pattern write wms/%u/ack
+pattern read wms/%u/cmd
+pattern read wms/%u/config

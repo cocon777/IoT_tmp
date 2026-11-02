@@ -1,0 +1,10 @@
+=== KIEM THU BAO MAT S11 / S3: MOSQUITTO DYNAMIC SECURITY & THU HOI THIET BI ===
+Broker: mosquitto:1883
+Timestamp: 2026-10-27T09:41:20.769438+00:00
+--------------------------------------------------------------------------------
+[PASS] 1. create_client('wms-test'): ket noi thanh cong, publish wms/wms-test/telemetry duoc nhan, publish wms/other/telemetry bi ACL chan.
+[PASS] 2. disable_client('wms-test'): ket noi lai bi tu choi ngay (reason=Not authorized).
+[PASS] 2b. enable_client('wms-test'): kich hoat lai va ket noi thanh cong.
+[PASS] 3. delete_client('wms-test') khi dang ket noi: phien MQTT dang mo bi ngat tuc thi (kicked=True) va ket noi lai bi tu choi (reason=Not authorized).
+--------------------------------------------------------------------------------
+KET QUA S11 / S3 (MUC BROKER): 3/3 PASS

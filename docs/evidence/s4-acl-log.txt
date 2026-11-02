@@ -1,0 +1,12 @@
+=== KIEM THU BAO MAT S3 / S4: MOSQUITTO PASSWORD_FILE & ACL ===
+Broker: 127.0.0.2:1883
+Timestamp: 2026-10-27T11:27:58Z
+---------------------------------------------------------------
+[PASS] 1. wms-001 publish wms/wms-001/telemetry -> thanh cong (QoS 1)
+[PASS] 2. wms-001 publish wms/khac/telemetry -> bi chan boi ACL (khong phan phoi toi backend)
+[PASS] 3. wms-001 subscribe wms/# -> khong nhan duoc ban tin nao (ACL chan doc)
+[PASS] 4. Ket noi khong mat khau (anonymous) -> bi tu choi (rc=5: Connection error: Connection Refused: not authorised
+Error: The connection was refused)
+[PASS] 5. backend subscribe wms/# -> nhan duoc: wms/wms-001/telemetry {"device_id":"wms-001","seq":1,"level_pct":65.0}
+---------------------------------------------------------------
+Ket qua: 5/5 PASS, 0/5 FAIL

@@ -1,0 +1,96 @@
+[
+  {
+    "id": "S5-01",
+    "description": "level_pct vuot nguong (999 > 100)",
+    "expected_reason": "level_pct_out_of_range",
+    "payload": {
+      "device_id": "wms-001",
+      "boot_id": "a3f9",
+      "seq": 2001,
+      "ts": "2026-11-01T09:00:05Z",
+      "distance_cm": -100.0,
+      "level_pct": 999,
+      "flow_lpm": 3.2,
+      "pump_on": true,
+      "fault": ""
+    }
+  },
+  {
+    "id": "S5-02",
+    "description": "level_pct am (-15 < 0)",
+    "expected_reason": "level_pct_out_of_range",
+    "payload": {
+      "device_id": "wms-001",
+      "boot_id": "a3f9",
+      "seq": 2002,
+      "ts": "2026-11-01T09:00:10Z",
+      "distance_cm": 30.0,
+      "level_pct": -15.0,
+      "flow_lpm": 0.0,
+      "pump_on": false,
+      "fault": ""
+    }
+  },
+  {
+    "id": "S5-03",
+    "description": "Thieu truong bat buoc ts (timestamp)",
+    "expected_reason": "missing_field:ts",
+    "payload": {
+      "device_id": "wms-001",
+      "boot_id": "a3f9",
+      "seq": 2003,
+      "distance_cm": 18.4,
+      "level_pct": 72.5,
+      "flow_lpm": 3.2,
+      "pump_on": true
+    }
+  },
+  {
+    "id": "S5-04",
+    "description": "Chuoi XSS <script> trong truong fault",
+    "expected_reason": "malicious_content_detected",
+    "payload": {
+      "device_id": "wms-001",
+      "boot_id": "a3f9",
+      "seq": 2004,
+      "ts": "2026-11-01T09:00:15Z",
+      "distance_cm": 18.4,
+      "level_pct": 72.5,
+      "flow_lpm": 3.2,
+      "pump_on": false,
+      "fault": "<script>alert('xss')</script>"
+    }
+  },
+  {
+    "id": "S5-05",
+    "description": "Chuoi SQL Injection trong device_id/fault",
+    "expected_reason": "malicious_content_detected",
+    "payload": {
+      "device_id": "wms-001' OR '1'='1",
+      "boot_id": "a3f9",
+      "seq": 2005,
+      "ts": "2026-11-01T09:00:20Z",
+      "distance_cm": 18.4,
+      "level_pct": 72.5,
+      "flow_lpm": 3.2,
+      "pump_on": false,
+      "fault": "'; DROP TABLE telemetry; --"
+    }
+  },
+  {
+    "id": "S5-06",
+    "description": "flow_lpm am (-5.0 L/min)",
+    "expected_reason": "negative_flow_lpm",
+    "payload": {
+      "device_id": "wms-001",
+      "boot_id": "a3f9",
+      "seq": 2006,
+      "ts": "2026-11-01T09:00:25Z",
+      "distance_cm": 18.4,
+      "level_pct": 72.5,
+      "flow_lpm": -5.0,
+      "pump_on": false,
+      "fault": ""
+    }
+  }
+]

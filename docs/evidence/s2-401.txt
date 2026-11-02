@@ -1,0 +1,18 @@
+=== KIEM THU BAO MAT S2 (BUOC S5): XAC THUC JWT & LOI 401 ===
+Target API: http://localhost:8000
+Timestamp: 2026-10-27T11:28:04Z
+-------------------------------------------------------------
+[1] GET /api/me (Khong co token):
+    Status: HTTP/1.1 401 Unauthorized
+    Body:   {"detail":"Missing authentication token"}
+[2] GET /api/me (Token sai chu ky):
+    Status: HTTP/1.1 401 Unauthorized
+    Body:   {"detail":"Invalid authentication token"}
+[3] GET /api/me (Token da het han exp < now):
+    Status: HTTP/1.1 401 Unauthorized
+    Body:   {"detail":"Token has expired"}
+[4] POST /api/auth/login (Sai mat khau):
+    Status: HTTP/1.1 401 Unauthorized
+    Body:   {"detail":"Invalid email or password"}
+-------------------------------------------------------------
+KET QUA S2: PASS (Tat ca truong hop thieu/sai/het han token deu tra 401)

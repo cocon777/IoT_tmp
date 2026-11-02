@@ -1,0 +1,8 @@
+=== KIEM THU BAO MAT S13: MQTT OVER TLS (PORT 8883) ===
+Target Broker: 127.0.0.2:8883
+CA Certificate: deployment/certs/ca.crt
+--------------------------------------------------------
+[PASS] 1. mosquitto_pub --cafile ca.crt -p 8883 -> THANH CONG
+[PASS] 2. mosquitto_pub KHONG co --cafile tren cong 8883 -> BI TU CHOI (rc=14: Error: protocol error)
+--------------------------------------------------------
+KET QUA TLS CLI: 2/2 PASS

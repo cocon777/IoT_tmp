@@ -1,0 +1,32 @@
+flowchart TB
+    subgraph External["Mạng bên ngoài / Thiết bị & Người dùng"]
+        ESP32["Nút đo & Điều khiển ESP32\n(wms-001, wms-002)"]
+        Browser["Trình duyệt Người dùng\n(Admin / Operator / Viewer)"]
+    end
+
+    subgraph Host["Máy chủ Triển khai (Docker Host)"]
+        subgraph WMS_Net["Mạng nội bộ Docker: wms_net (Bridge)"]
+            Mosquitto["Container: wms-mosquitto\n(Eclipse Mosquitto 2.0)\nDynamic Security + ACL + TLS"]
+            Backend["Container: wms-backend\n(FastAPI + Uvicorn --workers 1)\nJWT + RBAC + Audit + Device Guard"]
+            MySQL[("Container: wms-mysql\n(MySQL 8.0)\nChỉ mở nội bộ 3306\nHealthcheck: mysqladmin ping")]
+            Frontend["Container: wms-frontend\n(Nginx Alpine)\nReverse Proxy & Giao diện Web"]
+        end
+
+        subgraph Volumes["Docker Volumes & Cấu hình"]
+            VolMosqData[("mosquitto_data\n& mosquitto_log")]
+            VolMySQLData[("mysql_data\n(/var/lib/mysql)")]
+            Certs["deployment/certs/\n(ca.crt, server.crt, server.key)"]
+        end
+    end
+
+    ESP32 -- "MQTT over TLS :8883\n(Dev: :1883)" --> Mosquitto
+    Browser -- "HTTPS :8443 / HTTP :8080" --> Frontend
+    Browser -- "REST API & WebSocket :8000\n(Bearer JWT)" --> Backend
+    Frontend -- "Proxy / Giao diện tĩnh" --> Backend
+    Backend -- "MQTT Subscribe wms/#\n& $CONTROL/dynamic-security/v1" --> Mosquitto
+    Backend -- "SQLAlchemy TCP :3306\n(Nội bộ wms_net)" --> MySQL
+
+    Mosquitto --- VolMosqData
+    Mosquitto --- Certs
+    Frontend --- Certs
+    MySQL --- VolMySQLData

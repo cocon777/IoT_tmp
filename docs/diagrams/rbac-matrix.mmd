@@ -1,0 +1,34 @@
+flowchart LR
+    subgraph Roles["3 Vai trò Người dùng (UserRole)"]
+        Admin["Admin\n(Quản trị hệ thống)"]
+        Operator["Operator\n(Vận hành viên - Theo phạm vi user_devices)"]
+        Viewer["Viewer\n(Quan sát viên - Chỉ đọc toàn hệ thống)"]
+    end
+
+    subgraph Perms["Nhóm Quyền trong PERMISSION_MATRIX (security/rbac.py)"]
+        P_User["users:manage\n(Tạo/Sửa/Khóa user, Gán thiết bị)"]
+        P_DevProv["devices:provision & devices:state\n(Đăng ký thiết bị, Đổi trạng thái vòng đời)"]
+        P_Audit["audit_logs:read\n(Tra cứu nhật ký kiểm toán)"]
+        P_Cmd["commands:create & devices:config & alerts:ack\n(Bật/tắt bơm, Đổi ngưỡng, Xác nhận cảnh báo)"]
+        P_Read["devices:read & telemetry:read & alerts:read\n(Xem thiết bị, mực nước, lưu lượng, cảnh báo)"]
+    end
+
+    subgraph Scope["Kiểm tra Phạm vi Thiết bị (can_access_device)"]
+        S_All["Toàn bộ thiết bị\n(wms-001, wms-002, ...)"]
+        S_Assigned["Chỉ thiết bị được gán\ntrong bảng user_devices"]
+    end
+
+    Admin --> P_User
+    Admin --> P_DevProv
+    Admin --> P_Audit
+    Admin --> P_Cmd
+    Admin --> P_Read
+
+    Operator --> P_Cmd
+    Operator --> P_Read
+
+    Viewer --> P_Read
+
+    Admin --> S_All
+    Viewer --> S_All
+    Operator --> S_Assigned

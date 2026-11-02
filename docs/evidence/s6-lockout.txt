@@ -1,0 +1,14 @@
+=== KIEM THU BAO MAT S6 (BUOC S6): KHOA TAM SAU 5 LAN DANG NHAP SAI ===
+Tai khoan thu nghiem: operator_a@wms.io
+Thoi diem bat dau (t0): 2026-10-27T09:15:00+00:00
+-----------------------------------------------------------------------
+[Lan 1] Nhap sai mat khau -> HTTP 401 | failed_attempts=1 | locked_until=None
+[Lan 2] Nhap sai mat khau -> HTTP 401 | failed_attempts=2 | locked_until=None
+[Lan 3] Nhap sai mat khau -> HTTP 401 | failed_attempts=3 | locked_until=None
+[Lan 4] Nhap sai mat khau -> HTTP 401 | failed_attempts=4 | locked_until=None
+[Lan 5] Nhap sai mat khau -> HTTP 401 | failed_attempts=5 | locked_until=2026-10-27 09:30:00
+[Lan 6 - Trong thoi gian khoa] Nhap DUNG mat khau -> HTTP 403 | Body: {'detail': 'Account is temporarily locked due to multiple failed login attempts'}
+--- Tua dong ho sang t0 + 16 phut (2026-10-27T09:31:00+00:00) ---
+[Lan 7 - Sau khi het han locked_until] Nhap DUNG mat khau -> HTTP 200 | failed_attempts=0 | locked_until=None
+-----------------------------------------------------------------------
+KET QUA S6: PASS (Khoa tam 15 phut sau 5 lan sai, tu choi lan 6 du dung mat khau, mo khoa sau khi het han)

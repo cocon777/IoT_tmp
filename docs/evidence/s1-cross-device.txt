@@ -1,0 +1,11 @@
+=== KIEM THU BAO MAT S1 (BUOC S7): KIEM SOAT PHAM VI THIET BI & RBAC ===
+Cau hinh pham vi: Operator A -> wms-001 (id=1); Operator B -> wms-002 (id=2)
+------------------------------------------------------------------------
+[1] Operator A gui lenh bom tren thiet bi duoc gan (id=1): HTTP 200 | {'cmd_id': 'f1c65475-8596-40f3-8aed-0d311f66dc1d', 'device_id': 1, 'user_id': 1, 'user_email': 'operator_a@wms.io', 'action': 'pump', 'value': 'on', 'duration_s': 60, 'status': 'sent', 'sent_at': '2026-11-02T04:08:43.908741Z', 'acked_at': None, 'reason': '', 'source': None}
+[2] Operator A goi GET /api/devices/2 (thiet bi cua B): HTTP 404 | {'detail': 'Device not found'}
+[2] Operator A goi GET /api/devices/2/telemetry (thiet bi cua B): HTTP 404 | {'detail': 'Device not found'}
+[2] Operator A goi POST /api/devices/2/commands (thiet bi cua B): HTTP 404 | {'detail': 'Device not found'}
+[2] Operator A goi PUT /api/devices/2/config (thiet bi cua B): HTTP 404 | {'detail': 'Device not found'}
+[3] Viewer gui lenh bom tren thiet bi id=1: HTTP 403 | {'detail': 'Insufficient role permissions'}
+------------------------------------------------------------------------
+KET QUA S1: PASS (Operator A bi chan 404 khi truy cap thiet bi cua B; Viewer bi chan 403 khi dieu khien)

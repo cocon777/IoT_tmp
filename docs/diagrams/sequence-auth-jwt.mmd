@@ -1,0 +1,48 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng (Operator)
+    participant API as FastAPI Backend (/api/*)
+    participant Sec as Security Layer (auth.py / lockout.py / rbac.py)
+    participant DB as MySQL 8.0 (users, user_devices, audit_logs)
+
+    Note over User,DB: Luồng 1: Đăng nhập và Cấp phát JWT (POST /api/auth/login)
+    User->>API: POST /api/auth/login {email, password}
+    API->>Sec: check_ip_rate_limit(client_ip)
+    Sec-->>API: OK (Chưa vượt ngưỡng 20 req / 5 phút)
+    API->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>API: Bản ghi User (password_hash, role, is_active, failed_attempts, locked_until)
+    API->>Sec: check_account_lockout(user)
+    alt Tài khoản đang bị khóa (locked_until > now)
+        Sec->>DB: INSERT INTO audit_logs (action='auth.login_blocked_locked')
+        Sec-->>User: 423 Locked ("Tài khoản đang bị tạm khóa")
+    else Tài khoản không bị khóa
+        API->>Sec: verify_password(password, user.password_hash) [bcrypt]
+        alt Mật khẩu sai
+            Sec->>DB: UPDATE users SET failed_attempts = failed_attempts + 1 (và locked_until nếu >= 5)
+            Sec->>DB: INSERT INTO audit_logs (action='auth.login_failed' / 'auth.account_locked')
+            Sec-->>User: 401 Unauthorized / 423 Locked
+        else Mật khẩu đúng
+            Sec->>DB: UPDATE users SET failed_attempts = 0, locked_until = NULL
+            Sec->>Sec: create_access_token(user_id, role, jti, exp=60m)
+            Sec->>DB: INSERT INTO audit_logs (action='auth.login_success')
+            API-->>User: 200 OK {access_token, token_type: "bearer", expires_in}
+        end
+    end
+
+    Note over User,DB: Luồng 2: Gọi API Điều khiển Thiết bị có JWT (POST /api/devices/{id}/commands)
+    User->>API: POST /api/devices/1/commands (Authorization: Bearer <JWT>)
+    API->>Sec: get_current_user(token) -> decode_access_token(JWT)
+    Sec->>DB: Kiểm tra jti không nằm trong blacklist & user.is_active == True
+    API->>Sec: require_role("Admin", "Operator")
+    Sec-->>API: Hợp lệ (user.role == Operator)
+    API->>Sec: require_device_access(device_id=1, user)
+    Sec->>DB: SELECT 1 FROM user_devices WHERE user_id = ? AND device_id = 1
+    alt Thiết bị nằm ngoài phạm vi được gán (Kịch bản S1)
+        DB-->>Sec: Không có bản ghi
+        Sec->>DB: INSERT INTO audit_logs (action='rbac.device_access_denied', target_id='1')
+        Sec-->>User: 403 Forbidden
+    else Thiết bị thuộc phạm vi được gán
+        DB-->>Sec: Hợp lệ
+        API->>DB: INSERT INTO audit_logs (action='command.create', target_id='1', detail=redacted)
+        API-->>User: 200 OK {status: "accepted", device_id: 1}
+    end

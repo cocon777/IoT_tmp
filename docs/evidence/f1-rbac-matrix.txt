@@ -1,0 +1,21 @@
+=== KIEM THU CHUC NANG F1 (BUOC S14): DANG NHAP & PHAN QUYEN 3 VAI TRO ===
+Timestamp: 2026-11-02T04:08:37.614722+00:00
+--------------------------------------------------------------------------
+[PASS] Dang nhap admin (admin@wms.io) -> HTTP 200 (nhan JWT)
+[PASS] Dang nhap operator (operator_a@wms.io) -> HTTP 200 (nhan JWT)
+[PASS] Dang nhap viewer (viewer@wms.io) -> HTTP 200 (nhan JWT)
+[PASS] 1. Quan ly nguoi dung (GET /api/users) -> admin=200, operator=403, viewer=403
+[PASS] 2. Xem tai khoan ca nhan (GET /api/me) -> admin=200, operator=200, viewer=200
+[PASS] 3. Dang ky thiet bi (POST /api/devices) -> admin=200, operator=403, viewer=403
+[PASS] 4. Gan thiet bi cho user (POST /api/users/2/devices/1) -> admin=200, operator=403, viewer=403
+[PASS] 5. Xem thiet bi duoc gan (GET /api/devices/1) -> admin=200, operator=200, viewer=200
+[PASS] 6. Xem telemetry thiet bi duoc gan (GET /api/devices/1/telemetry) -> admin=200, operator=200, viewer=200
+[PASS] 7. Xuat CSV thiet bi duoc gan (GET /api/devices/1/telemetry/export) -> admin=200, operator=200, viewer=403
+[PASS] 8. Doi cau hinh thiet bi (PUT /api/devices/1/config) -> admin=200, operator=200, viewer=403
+[PASS] 9. Gui lenh bom (POST /api/devices/1/commands) -> admin=200, operator=200, viewer=403
+[PASS] 10. Chuyen sang Maintenance (PATCH /api/devices/1/maintenance) -> admin=200, operator=200, viewer=403
+[PASS] 11. Xem canh bao (GET /api/devices/1/alerts) -> admin=200, operator=200, viewer=200
+[PASS] 12. Ack canh bao (POST /api/devices/1/alerts/ack) -> admin=200, operator=200, viewer=403
+[PASS] 13. Xem audit log (GET /api/audit-logs) -> admin=200, operator=403, viewer=403
+--------------------------------------------------------------------------
+KET QUA F1: 13/13 CHUC NANG PASS TREN CA 3 VAI TRO (ADMIN, OPERATOR, VIEWER)
